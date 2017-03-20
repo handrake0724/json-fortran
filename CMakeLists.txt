@@ -179,8 +179,8 @@ if ( NOT SKIP_DOC_GEN )
     if ( NOT (DEFINED FORD_OUTPUTS_CACHED) )
       message ( STATUS "Running FORD to dynamically compute documentation outputs, this could take a while..." )
       execute_process ( COMMAND ${CMAKE_COMMAND} -E remove_directory ${DOC_DIR}
-	COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_DIR}
-	COMMAND "${FORD}" --debug -q ${MACRO_FLAG} -d "${PROJ_DIR}" -o "${DOC_DIR}" -p "${PAGE_DIR}" "${FORD_PROJECT_FILE}" OUTPUT_QUIET )
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${DOC_DIR}
+        COMMAND "${FORD}" --debug -q ${MACRO_FLAG} -d "${PROJ_DIR}" -o "${DOC_DIR}" -p "${PAGE_DIR}" "${FORD_PROJECT_FILE}" OUTPUT_QUIET )
     else ()
       message ( STATUS "Re-using cached FORD outputs, rather than regenerating them" )
     endif ()
@@ -191,13 +191,13 @@ if ( NOT SKIP_DOC_GEN )
     if ( (DEFINED FORD_OUTPUTS) AND ( NOT ( "${FORD_OUTPUTS}" STREQUAL "" ) ) )
       message ( STATUS "Caching FORD outputs" )
       set ( FORD_OUTPUTS_CACHED "${FORD_OUTPUTS}"
-	CACHE STRING "variable containing FORD outputs to prevent rebuilding FORD docs" FORCE )
+        CACHE STRING "variable containing FORD outputs to prevent rebuilding FORD docs" FORCE )
     endif ()
     message ( STATUS "Done dynamically computing FORD outputs." )
 
     foreach ( DOC_SRC_FILE ${JF_LIB_SRCS} ${JF_TEST_SRCS} ${CMAKE_SOURCE_DIR}/README.md
-	${CMAKE_SOURCE_DIR}/CHANGELOG.md ${CMAKE_SOURCE_DIR}/.github/CONTRIBUTING.md
-	${CMAKE_SOURCE_DIR}/LICENSE ${CMAKE_SOURCE_DIR}/json-fortran.md ${PAGES_FILES} )
+        ${CMAKE_SOURCE_DIR}/CHANGELOG.md ${CMAKE_SOURCE_DIR}/.github/CONTRIBUTING.md
+        ${CMAKE_SOURCE_DIR}/LICENSE ${CMAKE_SOURCE_DIR}/json-fortran.md ${PAGES_FILES} )
       list ( APPEND FORD_DEPENDS "${DOC_SRC_FILE}" )
     endforeach ()
     add_custom_command ( OUTPUT ${FORD_OUTPUTS_CACHED}
@@ -211,9 +211,9 @@ if ( NOT SKIP_DOC_GEN )
       CACHE BOOL "Install FORD generated documentation?" )
     if ( INSTALL_API_DOCUMENTATION )
       if ( USE_GNU_INSTALL_CONVENTION )
-	install ( DIRECTORY "${DOC_DIR}/" DESTINATION "${CMAKE_INSTALL_DOCDIR}" )
+        install ( DIRECTORY "${DOC_DIR}/" DESTINATION "${CMAKE_INSTALL_DOCDIR}" )
       else ()
-	install ( DIRECTORY "${DOC_DIR}/" DESTINATION "${CMAKE_INSTALL_PREFIX}/${PACKAGE_VERSION}/doc" )
+        install ( DIRECTORY "${DOC_DIR}/" DESTINATION "${CMAKE_INSTALL_PREFIX}/${PACKAGE_VERSION}/doc" )
       endif ()
     endif ()
   else () # Not found
@@ -259,18 +259,18 @@ if ( ENABLE_TESTS )
     foreach ( VALID_JSON ${JSON_INPUTS} )
       get_filename_component ( TESTNAME "${VALID_JSON}" NAME )
       add_test ( NAME validate-${TESTNAME}
-	WORKING_DIRECTORY "${DATA_DIR}/inputs"
-	COMMAND ${JSONLINT} "--allow=nonescape-characters" "${VALID_JSON}" )
+        WORKING_DIRECTORY "${DATA_DIR}/inputs"
+        COMMAND ${JSONLINT} "--allow=nonescape-characters" "${VALID_JSON}" )
     endforeach ()
 
     foreach ( INVALID ${INVALID_JSON} )
       get_filename_component ( TESTNAME "${INVALID}" NAME )
       add_test ( NAME validate-${TESTNAME}
-	WORKING_DIRECTORY "${DATA_DIR}/inputs"
-	COMMAND ${JSONLINT} "${INVALID}" )
+        WORKING_DIRECTORY "${DATA_DIR}/inputs"
+        COMMAND ${JSONLINT} "${INVALID}" )
       set_property ( TEST validate-${TESTNAME}
-	PROPERTY
-	WILL_FAIL TRUE)
+        PROPERTY
+        WILL_FAIL TRUE)
     endforeach ()
   endif ()
 
@@ -289,8 +289,8 @@ if ( ENABLE_TESTS )
     list ( APPEND UNIT_TESTS ${TEST} )
     if ( JSONLINT )
       set_property ( TEST ${TEST}
-	APPEND
-	PROPERTY DEPENDS validate-input1 validate-input2 )
+        APPEND
+        PROPERTY DEPENDS validate-input1 validate-input2 )
     endif()
   endforeach ( UNIT_TEST )
 
@@ -304,13 +304,13 @@ if ( ENABLE_TESTS )
     foreach ( JSON_FILE ${JSON_FILES} )
       get_filename_component ( TESTNAME ${JSON_FILE} NAME )
       add_test ( NAME validate-output-${TESTNAME}
-	WORKING_DIRECTORY "${DATA_DIR}"
-	COMMAND ${JSONLINT} "--allow=nonescape-characters" ${TESTNAME} )
+        WORKING_DIRECTORY "${DATA_DIR}"
+        COMMAND ${JSONLINT} "--allow=nonescape-characters" ${TESTNAME} )
       set_property ( TEST validate-output-${TESTNAME}
-	APPEND
-	PROPERTY
-	DEPENDS ${UNIT_TESTS}
-	REQUIRED_FILES ${JSON_FILES} )
+        APPEND
+        PROPERTY
+        DEPENDS ${UNIT_TESTS}
+        REQUIRED_FILES ${JSON_FILES} )
     endforeach ( JSON_FILE )
   endif ()
 
@@ -320,13 +320,13 @@ if ( ENABLE_TESTS )
     foreach ( JSON_FILE ${JSON_FILES} )
       get_filename_component ( JSON_STEM ${JSON_FILE} NAME_WE )
       add_test ( NAME regression-${JSON_STEM}.json
-	WORKING_DIRECTORY "${DATA_DIR}"
-	COMMAND ${DIFF} -q ${JSON_STEM}.json expected-outputs/${JSON_STEM}.json )
+        WORKING_DIRECTORY "${DATA_DIR}"
+        COMMAND ${DIFF} -q ${JSON_STEM}.json expected-outputs/${JSON_STEM}.json )
       set_property ( TEST regression-${JSON_STEM}.json
-	APPEND
-	PROPERTY
-	DEPENDS ${UNIT_TESTS}
-	REQUIRED_FILES ${JSON_FILES} )
+        APPEND
+        PROPERTY
+        DEPENDS ${UNIT_TESTS}
+        REQUIRED_FILES ${JSON_FILES} )
     endforeach ( JSON_FILE )
   else ()
     message ( WARNING
@@ -412,3 +412,7 @@ install(FILES
    "${CMAKE_CURRENT_BINARY_DIR}/json-fortran.pc"
    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
 )
+if(WIN32)
+  INCLUDE_DIRECTORIES("src")
+  SET(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fpp")
+endif()
