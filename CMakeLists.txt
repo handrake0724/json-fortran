@@ -132,6 +132,21 @@ endif ()
 set ( LIB_NAME ${CMAKE_PROJECT_NAME} )
 add_library ( ${LIB_NAME}        SHARED ${JF_LIB_SRCS} )
 add_library ( ${LIB_NAME}-static STATIC ${JF_LIB_SRCS} )
+if(WIN32)
+set_target_properties ( ${LIB_NAME}-static
+  PROPERTIES
+  OUTPUT_NAME ${LIB_NAME}
+  VERSION ${VERSION}
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+  Fortran_MODULE_DIRECTORY ${MODULE_DIR} )
+set_target_properties ( ${LIB_NAME}
+  PROPERTIES
+  OUTPUT_NAME ${LIB_NAME}
+  SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR}
+  VERSION ${VERSION}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+  Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR} )
+else()
 set_target_properties ( ${LIB_NAME}-static
   PROPERTIES
   OUTPUT_NAME ${LIB_NAME}
@@ -147,6 +162,7 @@ set_target_properties ( ${LIB_NAME}
   VERSION ${VERSION}
   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
   Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR} )
+endif()
 
 #-------------------------------------
 # Build the documentation with FORD
